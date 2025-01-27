@@ -1,21 +1,26 @@
-name: build and delpoy hugo site
+name: build and deploy hugo site
 
 on:
   push:
     branches:
       - main
 
-
 jobs:
-
   deploy:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Git checkout
         uses: actions/checkout@v4
+
+      - name: Clean up exampleSite (if exists)
+        run: |
+          if [ -d "./themes/gokarna/exampleSite" ]; then
+            echo "Removing exampleSite directory to avoid symbolic link issues..."
+            rm -rf ./themes/gokarna/exampleSite
+          else
+            echo "exampleSite directory does not exist, skipping cleanup."
+          fi
 
       - name: Update theme
         run: git submodule update --init --recursive
